@@ -1,0 +1,9 @@
+{
+  "type": "sqlite",
+  "database": "./src/motorboat_rental.db",
+  "synchronize": true,
+  "logging": true,
+  "entities": [
+    "src/entity/**/*.js"
+  ]
+}
