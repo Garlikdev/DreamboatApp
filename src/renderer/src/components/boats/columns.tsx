@@ -1,6 +1,7 @@
+import { useEffect, useState } from 'react'
 import { ColumnDef } from '@tanstack/react-table'
-import { BoatSchema } from '../schemas/boatSchema'
 import { MoreHorizontal } from 'lucide-react'
+import { BoatSchema } from '../schemas/boatSchema'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -22,7 +23,78 @@ export const columns: ColumnDef<BoatSchema>[] = [
         id: 'availability',
         header: 'Dostępność',
         cell: ({ row }) => {
-            return <Badge variant="destructive">Pływa</Badge>
+            const [availability, setAvailability] = useState<string>('Dostępny')
+            const [endDate, setEndDate] = useState<string | null>(null)
+            const boatId = row.original.id
+
+            useEffect(() => {
+                const checkAvailability = async () => {
+                    try {
+                        const reservations =
+                            await window.electron.ipcRenderer.invoke(
+                                'boat-check-availability',
+                                boatId
+                            )
+                        const now = new Date().toISOString()
+
+                        if (reservations.length > 0) {
+                            const currentReservation = reservations.find(
+                                (reservation: any) => {
+                                    const start = new Date(reservation.start)
+                                    const end = new Date(reservation.end)
+                                    return (
+                                        now >= start.toISOString() &&
+                                        now <= end.toISOString()
+                                    )
+                                }
+                            )
+
+                            if (currentReservation) {
+                                setAvailability('Pływa')
+                                setEndDate(currentReservation.end)
+                            } else {
+                                setAvailability('Dostępny')
+                                setEndDate(null)
+                            }
+                        } else {
+                            setAvailability('Dostępny')
+                            setEndDate(null)
+                        }
+                    } catch (error) {
+                        console.error('Error checking availability:', error)
+                        setAvailability('Błąd')
+                        setEndDate(null)
+                    }
+                }
+
+                checkAvailability()
+            }, [boatId])
+
+            return (
+                <div>
+                    {endDate && availability === 'Pływa' ? (
+                        <Badge
+                            variant={
+                                availability === 'Pływa'
+                                    ? 'destructive'
+                                    : 'default'
+                            }
+                        >
+                            Od {new Date(endDate).toLocaleString()}
+                        </Badge>
+                    ) : (
+                        <Badge
+                            variant={
+                                availability === 'Pływa'
+                                    ? 'destructive'
+                                    : 'default'
+                            }
+                        >
+                            {availability}
+                        </Badge>
+                    )}
+                </div>
+            )
         },
     },
     {
@@ -93,19 +165,13 @@ export const columns: ColumnDef<BoatSchema>[] = [
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
+                            <span className="sr-only">Otwórz menu</span>
                             <MoreHorizontal className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Jednostka</DropdownMenuLabel>
-                        <DropdownMenuItem
-                            onClick={() =>
-                                navigator.clipboard.writeText(boat.id)
-                            }
-                        >
-                            Edytuj
-                        </DropdownMenuItem>
+                        <DropdownMenuItem>Edytuj</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuLabel>Rezerwacje</DropdownMenuLabel>
                         <DropdownMenuItem>Dodaj nową</DropdownMenuItem>

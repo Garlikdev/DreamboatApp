@@ -1,13 +1,12 @@
 import { z } from 'zod'
 
 const pricingSchema = z.object({
-    id: z.string(),
     days: z.number().min(1, 'Must be at least 1 day'),
     price: z.number().min(0, 'Price must be positive'),
 })
 
 export const boatSchema = z.object({
-    id: z.string(),
+    id: z.string().optional(),
     name: z.string().min(1, 'Name is required'),
     pricePerHour: z
         .number()
@@ -20,7 +19,7 @@ export const boatSchema = z.object({
         .positive()
         .min(0, 'Deposit price must be a positive number'),
     capacity: z.number().positive().min(1, 'Capacity must be at least 1'),
-    pricing: z.array(pricingSchema).optional(),
+    pricing: z.array(pricingSchema),
 })
 
 export type BoatSchema = z.infer<typeof boatSchema>

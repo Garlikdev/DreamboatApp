@@ -13,8 +13,13 @@ import {
     FormMessage,
 } from '../ui/form'
 import { Input } from '../ui/input'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from '../ui/use-toast'
+import { useNavigate } from 'react-router-dom'
 
-const AddBoat: React.FC = () => {
+const AddBoat = () => {
+    const queryClient = useQueryClient()
+    const navigate = useNavigate()
     const form = useForm<BoatSchema>({
         resolver: zodResolver(boatSchema),
     })
@@ -25,9 +30,34 @@ const AddBoat: React.FC = () => {
         name: 'pricing',
     })
 
-    const onSubmit = async (data: BoatSchema) => {
-        await window.electron.ipcRenderer.invoke('boats-add', data)
-    }
+    const { mutate } = useMutation({
+        mutationKey: ['boat-add'],
+        mutationFn: async (data: BoatSchema) => {
+            const response = await window.electron.ipcRenderer.invoke(
+                'boat-add',
+                data
+            )
+            return response // Return the response data from login function
+        },
+        onSuccess: (response) => {
+            queryClient.invalidateQueries({ queryKey: ['boat-getall'] })
+            toast({
+                title: 'Sukces!',
+                description: 'Jednostka została dodana do bazy danych',
+            })
+            navigate('/')
+        },
+        onError: (error: any) => {
+            // Handle API errors here
+            console.log(error)
+            toast({
+                title: 'Wystąpił błąd!',
+                description: error.message,
+            })
+        },
+    })
+
+    const onSubmit = (data: BoatSchema) => mutate(data)
 
     return (
         <div className="flex flex-col gap-4">
@@ -50,7 +80,10 @@ const AddBoat: React.FC = () => {
                     {/* Pricing Fields */}
                     <div className="space-y-2">
                         {fields.map((field, index) => (
-                            <div key={field.id} className="flex gap-4">
+                            <div
+                                key={field.id}
+                                className="grid grid-cols-3 gap-4 items-end"
+                            >
                                 <FormField
                                     control={control}
                                     name={`pricing.${index}.days`}
@@ -111,6 +144,7 @@ const AddBoat: React.FC = () => {
                                 />
                                 <Button
                                     type="button"
+                                    className="w-16"
                                     onClick={() => remove(index)}
                                 >
                                     Usuń

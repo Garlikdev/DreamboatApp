@@ -70,39 +70,42 @@
         --input: 0 0% 14.9%;
         --ring: 0 0% 83.1%;
 
-         --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+        --chart-1: 220 70% 50%;
+        --chart-2: 160 60% 45%;
+        --chart-3: 30 80% 55%;
+        --chart-4: 280 65% 60%;
+        --chart-5: 340 75% 55%;
     }
-        body {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
         @apply bg-background text-foreground;
-        background-image: url('./images/wavy-lines.svg');
-        background-size: cover;
+        font-family:
+            Inter,
+            -apple-system,
+            BlinkMacSystemFont,
+            'Segoe UI',
+            Roboto,
+            Oxygen,
+            Ubuntu,
+            Cantarell,
+            'Fira Sans',
+            'Droid Sans',
+            'Helvetica Neue',
+            sans-serif;
+        font-feature-settings:
+            'rlig' 1,
+            'calt' 1;
+        overflow: hidden;
         user-select: none;
         min-height: 100vh;
-    line-height: 1.6;
-    font-family:
-        Inter,
-        -apple-system,
-        BlinkMacSystemFont,
-        'Segoe UI',
-        Roboto,
-        Oxygen,
-        Ubuntu,
-        Cantarell,
-        'Fira Sans',
-        'Droid Sans',
-        'Helvetica Neue',
-        sans-serif;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
     }
 
     /* width */
@@ -139,9 +142,6 @@
             Liberation Mono,
             monospace;
         font-size: 85%;
-    }
-    .button {
-        @apply bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full hover:cursor-pointer content-center;
     }
     /* For AppBar */
     .draggable {

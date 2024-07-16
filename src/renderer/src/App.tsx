@@ -3,15 +3,30 @@ import {
     Route,
     Routes,
     NavLink,
+    BrowserRouter,
 } from 'react-router-dom'
 import dreamboatLogo from './assets/images/dreamboatblue.png'
 import Boats from './components/boats/Boats'
 import AddBoat from './components/boats/AddBoat'
 import Clients from './components/clients/Clients'
-import Rentals from './components/rentals/Rentals'
+import Reservations from './components/reservations/Reservations'
 import Stats from '@/components/stats/Stats'
 import { ModeToggle } from './components/mode-toggle'
-import { Calendar, Sailboat, User } from 'lucide-react'
+import {
+    BriefcaseBusiness,
+    Calendar,
+    LayoutDashboard,
+    Sailboat,
+    ShipWheel,
+    Users,
+} from 'lucide-react'
+import { Card } from './components/ui/card'
+import AddClient from './components/clients/AddClient'
+import AddReservation from './components/reservations/AddReservation'
+import Ports from './components/ports/Ports'
+import AddPort from './components/ports/AddPort'
+import Employees from './components/employees/Employees'
+import AddEmployee from './components/employees/AddEmployee'
 import { Separator } from './components/ui/separator'
 
 declare global {
@@ -22,70 +37,101 @@ declare global {
 
 function App() {
     return (
-        <Router>
+        <BrowserRouter>
             <div className="flex w-screen p-4 h-screen bg-neutral-50 dark:bg-neutral-950">
                 <Sidebar />
-                <div className="w-full flex justify-center px-8 py-4 overflow-y-auto">
+                <div className="w-full px-4 overflow-y-auto">
                     <Routes>
-                        <Route path="/" element={<Stats />} />
-                        <Route path="/boats" element={<Boats />} />
-                        <Route path="/boats/add" element={<AddBoat />} />
-                        <Route path="/clients" element={<Clients />} />
-                        <Route path="/rentals" element={<Rentals />} />
+                        // Pulpit
+                        <Route path="/">
+                            <Route index={true} element={<Stats />} />
+                        </Route>
+                        // Jednostki
+                        <Route path="boats">
+                            <Route index={true} element={<Boats />} />
+                            <Route path="new" element={<AddBoat />} />
+                        </Route>
+                        // Klienci
+                        <Route path="clients">
+                            <Route index={true} element={<Clients />} />
+                            <Route path="new" element={<AddClient />} />
+                        </Route>
+                        // Czarter
+                        <Route path="reservations">
+                            <Route index={true} element={<Reservations />} />
+                            <Route path="new" element={<AddReservation />} />
+                        </Route>
+                        // Czarter
+                        <Route path="ports">
+                            <Route index={true} element={<Ports />} />
+                            <Route path="new" element={<AddPort />} />
+                        </Route>
+                        // Czarter
+                        <Route path="employees">
+                            <Route index={true} element={<Employees />} />
+                            <Route path="new" element={<AddEmployee />} />
+                        </Route>
                     </Routes>
                 </div>
             </div>
-        </Router>
+        </BrowserRouter>
     )
 }
 
 function Sidebar() {
     return (
-        <div className="w-[20rem] shadow-lg gap-4 p-4 flex flex-col rounded-3xl bg-neutral-200 dark:bg-neutral-900 text-black dark:text-white text-sm">
-            <NavLink to="/" className="items-center justify-center flex group">
-                <img
-                    alt="logo Dreamboat"
-                    className="h-14 drop-shadow-lg hover:scale-110 transition-transform duration-300"
-                    src={dreamboatLogo}
-                />
-            </NavLink>
+        <Card className="w-[16rem] gap-4 p-4 flex flex-col text-sm">
+            <img
+                alt="logo Dreamboat"
+                className="w-48 drop-shadow-lg"
+                src={dreamboatLogo}
+            />
             <div className="flex flex-col justify-between h-full overflow-hidden">
-                <div className="overflow-y-auto">
-                    <h1 className="uppercase font-bold tracking-wide text-neutral-500 text-xs py-1">
-                        Czarter
-                    </h1>
-                    <NavItem to="/boats" label="Jachty" icon={Sailboat}>
-                        <SubNavItem to="/boats/add" label="Nowa jednostka" />
-                    </NavItem>
+                <div className="overflow-y-auto overflow-x-hidden gap-2 flex flex-col">
+                    <NavItem
+                        to="/"
+                        label="Pulpit"
+                        icon={LayoutDashboard}
+                        exact={true}
+                    />
+
+                    <NavItem
+                        to="/reservations"
+                        label="Rezerwacje"
+                        icon={Calendar}
+                        exact={true}
+                    />
                     <Separator />
-                    <NavItem to="/clients" label="Klienci" icon={User}>
-                        <SubNavItem to="/clients/add" label="Nowy klient" />
-                    </NavItem>
-                    <Separator />
-                    <NavItem to="/rentals" label="Rezerwacje" icon={Calendar}>
-                        <SubNavItem to="/rentals/add" label="Nowe zamówienie" />
-                    </NavItem>
-                    <Separator />
-                    <h1 className="uppercase font-bold tracking-wide text-neutral-500 text-xs py-1">
-                        Firma
-                    </h1>
-                    <NavItem to="/porty" label="Porty" icon={Sailboat}>
-                        <SubNavItem to="/porty/add" label="Nowy port" />
-                    </NavItem>
-                    <Separator />
-                    <NavItem to="/pracownicy" label="Pracownicy" icon={User}>
-                        <SubNavItem
-                            to="/pracownicy/add"
-                            label="Nowy pracownik"
-                        />
-                    </NavItem>
-                    <Separator />
+                    <NavItem
+                        to="/boats"
+                        label="Jednostki"
+                        icon={Sailboat}
+                        exact={true}
+                    />
+                    <NavItem
+                        to="/clients"
+                        label="Klienci"
+                        icon={Users}
+                        exact={true}
+                    />
+                    <NavItem
+                        to="/ports"
+                        label="Porty"
+                        icon={ShipWheel}
+                        exact={true}
+                    />
+                    <NavItem
+                        to="/employees"
+                        label="Pracownicy"
+                        icon={BriefcaseBusiness}
+                        exact={true}
+                    />
                 </div>
                 <div className="w-full items-center justify-center flex pb-1">
                     <ModeToggle />
                 </div>
             </div>
-        </div>
+        </Card>
     )
 }
 
@@ -93,16 +139,17 @@ interface NavItemProps {
     to: string
     label: string
     icon: React.ComponentType<{ className?: string }>
-    children: React.ReactNode
+    exact?: boolean
 }
 
-function NavItem({ to, label, icon: Icon, children }: NavItemProps) {
+function NavItem({ to, label, icon: Icon, exact = false }: NavItemProps) {
     return (
         <div>
             <NavLink
                 to={to}
+                end={exact}
                 className={({ isActive }) =>
-                    `hover:bg-blue-200 dark:hover:bg-blue-800 p-2 flex gap-2 font-bold rounded-xl items-center transition-colors duration-300 ${isActive && 'bg-blue-300 dark:bg-blue-700'}`
+                    `hover:bg-blue-200 dark:hover:bg-blue-800 p-2 flex gap-2 rounded-xl items-center transition-colors duration-300 ${isActive && 'bg-blue-300 font-bold dark:bg-blue-700'}`
                 }
             >
                 {({ isActive }) => (
@@ -114,28 +161,7 @@ function NavItem({ to, label, icon: Icon, children }: NavItemProps) {
                     </>
                 )}
             </NavLink>
-            <div className="hover:bg-blue-200 dark:hover:bg-blue-800 rounded-xl transition-colors duration-300">
-                {children}
-            </div>
         </div>
-    )
-}
-
-interface SubNavItemProps {
-    to: string
-    label: string
-}
-
-function SubNavItem({ to, label }: SubNavItemProps) {
-    return (
-        <NavLink
-            to={to}
-            className={({ isActive }) =>
-                `p-2 pl-8 block rounded-xl ${isActive && 'font-bold'}`
-            }
-        >
-            {label}
-        </NavLink>
     )
 }
 

@@ -1,18 +1,19 @@
 import { useQuery } from '@tanstack/react-query'
-import { DataTable } from '../tables/data-table'
-import { columns } from './columns'
 import { Button } from '../ui/button'
 import { NavLink } from 'react-router-dom'
+import { DataTable } from '../tables/data-table'
+import { columns } from './columns'
 
-const fetchBoats = async () => {
-    const boats = await window.electron.ipcRenderer.invoke('boat-getall')
-    return boats
+const fetchReservations = async () => {
+    const reservations =
+        await window.electron.ipcRenderer.invoke('reservation-getall')
+    return reservations
 }
 
-const Boats = () => {
+const Reservations = () => {
     const { isPending, error, data } = useQuery({
-        queryKey: ['boat-getall'],
-        queryFn: () => fetchBoats(),
+        queryKey: ['reservation-getall'],
+        queryFn: () => fetchReservations(),
     })
 
     if (isPending) return <div>Ładowanie...</div>
@@ -22,9 +23,9 @@ const Boats = () => {
         <div className="w-full flex flex-col gap-4 items-start">
             <div className="flex gap-8 items-center">
                 <h1 className="text drop-shadow-lg text-2xl font-bold">
-                    Jednostki
+                    Rezerwacje
                 </h1>
-                <NavLink to="/boats/new">
+                <NavLink to="/reservations/new">
                     <Button>Dodaj</Button>
                 </NavLink>
             </div>
@@ -33,4 +34,4 @@ const Boats = () => {
     )
 }
 
-export default Boats
+export default Reservations
